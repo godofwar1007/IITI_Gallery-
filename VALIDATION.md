@@ -15,3 +15,7 @@ Private detailed reports are generated under ignored `integration-checks/`. Verc
 ## Open gallery update
 
 The public deployment now permits anonymous gallery/status/media/search and base/campus profile comparison. Moderation, tag edits, managed uploads, hiding/deleting photos and event settings still require organizer authentication. The updated backend suite passes 46 tests, including explicit anonymous-access and protected-management checks; frontend routing/build tests remain 4 passed.
+
+## Deployment check correction
+
+The accidental Vercel `backend` project (FastAPI preset, backend root) was disconnected from GitHub; the actual GPU backend remains on Modal. The live frontend, health endpoint and public gallery were checked and returned HTTP 200 with 252 photos and live NVIDIA A10 inference. The frontend Vercel project remains connected to GitHub. Its Node runtime and package engine are pinned to 22.x, matching CI. A separate GitHub Backend checks workflow runs 5 public-artifact-independent tests; all passed locally. Frontend tests (4) and build passed.

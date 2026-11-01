@@ -1,0 +1,23 @@
+name: Backend checks
+on: [push, pull_request]
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+      - run: python -m pip install -e 'backend[test]'
+      # These checks require no private gallery export, weights or GPU.
+      # The full photo-dependent suite and GPU checks run separately with private artifacts.
+      - name: Test backend contracts, integrity checks and durable transactions
+        working-directory: backend
+        run: >-
+          python -m pytest -q
+          tests/test_frontend_contracts.py
+          tests/test_text_profiles.py::test_manifest_hash_mismatch_refused_before_loading_weights
+          tests/test_text_profiles.py::test_prepared_profiles_are_strict
+          tests/test_gateway.py::test_persistence_hook_runs_after_commit_and_not_after_rollback

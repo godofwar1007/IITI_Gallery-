@@ -1,5 +1,9 @@
 # Modal backend + Vercel frontend
 
+## Hosting boundary
+
+Create only the repository-root `iiti-gallery` project on Vercel. The Python `backend/` folder is deployed to Modal, not to a second Vercel/FastAPI project. The accidental Vercel project named `backend` was disconnected from GitHub after its build failed; it is not part of the working website.
+
 ## Live frontend
 
 https://iiti-gallery.vercel.app
