@@ -10,7 +10,7 @@ Vercel project `iiti-gallery`, team `ppp3work-5989s-projects`, is connected to t
 
 https://ppp3work--iiti-fieldnotes.us-east.modal.run/presenter
 
-The presenter requires an organizer password. It is stored in the private Modal secret `iiti-gallery-runtime-v1`, not in Git. The operator's local credential file is outside this repository. Student access uses the separate workshop code and consent flow; it cannot access presenter media or organizer APIs.
+The gallery, search, media and base/campus comparison are open without a password. Organizer login is required only for moderation, adding managed photos, editing tags, hiding/deleting photos and workshop settings. It is stored in the private Modal secret `iiti-gallery-runtime-v1`, not in Git. The operator's local credential file is outside this repository. Student access uses the separate workshop code and consent flow; it cannot access presenter media or organizer APIs.
 
 The model uses the pinned SigLIP 2 Giant image tower and the unchanged run-2 text adapter. One GPU worker maximum (L4 preferred, A10G fallback when L4 capacity is unavailable), zero minimum, 120-second idle scale-down, 300-second request and startup limits. A cold visit can take longer because the GPU/model must start. Keep it warm by opening the presenter before the workshop. GPU and persistent-volume usage are billable.
 

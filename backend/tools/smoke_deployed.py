@@ -23,8 +23,10 @@ def main():
         ready=admin.get('/health/ready');ready.raise_for_status()
         assert ready.json()['ready'] and ready.json()['inference']=='live'
         report['checks']['readiness']=True
-        assert admin.get('/api/v1/gallery').status_code==401
-        assert admin.post('/api/v1/admin/text-profile',json={'text_profile':'base'}).status_code==401
+        public_status=admin.get('/api/v1/admin/status')
+        is_public=public_status.status_code==200 and public_status.json().get('public_gallery',False)
+        assert admin.get('/api/v1/gallery').status_code==(200 if is_public else 401)
+        assert admin.post('/api/v1/admin/event',json={'intake':'open'}).status_code==401
         assert admin.post('/api/v1/auth/login',json={'password':'incorrect-test-password'}).status_code==401
         denied=admin.post('/api/v1/auth/login',json={'password':'unused'},headers={'Origin':'https://untrusted.example'})
         assert denied.status_code==403
@@ -49,7 +51,7 @@ def main():
                 response.raise_for_status();items=response.json()['items'];assert len(items)==5
                 results[profile][query]=[{'id':r['id'],'caption':r['caption'],'cosine':r['cosine']} for r in items]
                 assert admin.get(items[0]['thumb']).status_code==200
-                assert student.get(items[0]['thumb']).status_code==401
+                assert student.get(items[0]['thumb']).status_code==(200 if is_public else 401)
         assert results['base']['lhc'][0]['id']!=results['campus-run2']['lhc'][0]['id']
         assert [r['id'] for r in results['base']['a dog']]==[r['id'] for r in results['campus-run2']['a dog']]
         report['search_results']=results

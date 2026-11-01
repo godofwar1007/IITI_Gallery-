@@ -1,6 +1,6 @@
 # IIT Indore Â· Fieldnotes Gallery
 
-**Live website: https://iiti-gallery.vercel.app**
+**Live website: https://iiti-gallery.vercel.app — gallery and search are open, no login required.**
 
 A searchable photo gallery for the Cynaptics ML workshop. Search with descriptions or campus place names, compare base vs campus-tuned text search, inspect cosine scores, and add photographs through the presenter or optional moderated student upload flow.
 

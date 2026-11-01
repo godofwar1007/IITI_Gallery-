@@ -24,6 +24,7 @@ def main():
         ready=client.get('/health/ready');ready.raise_for_status();assert ready.json()['ready']
         # Reuse the original cookie without signing in again: its database row must persist.
         response=client.get('/api/v1/admin/status');response.raise_for_status();after=response.json()
+        assert before['organizer'] and after['organizer']
         photos_after=client.get('/api/v1/gallery?limit=120').json()
         assert before['instance_id']!=after['instance_id']
         assert before['collections']==after['collections'] and after['total']==252

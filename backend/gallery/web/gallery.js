@@ -18,6 +18,10 @@ async function refreshStatus(initial=false){
    state.visibleIds=ids;
  }
  state.status=status;
+ const canManage=status.organizer!==false;
+ ['open-settings','open-qr','add-laptop','add-camera','tags-toggle','hide-photo','reload-places','logout'].forEach(id=>{const node=document.getElementById(id);if(node)node.hidden=!canManage;});
+ document.querySelectorAll('a[href="/moderator"]').forEach(node=>node.hidden=!canManage);
+
  $('#campus-tuned').checked=status.text_profile==='campus-run2';
  $('#campus-tuned-label').textContent=status.text_profile==='campus-run2'?'on':'off';
  $('#campus-tuned').disabled=status.warming;

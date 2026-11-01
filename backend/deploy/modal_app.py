@@ -54,7 +54,7 @@ def web():
     password = os.environ['GALLERY_ADMIN_PASSWORD']
     config = Config(data=Path('/data/event'),seed=Path('/assets/gallery.zip'),model=Path('/assets/model'),
                     adapter=Path('/assets/adapter'),mode='live',text_profile='campus-run2',
-                    admin_hash=PasswordHasher().hash(password),cookie_secure=True,
+                    admin_hash=PasswordHasher().hash(password),cookie_secure=True,public_gallery=True,
                     public_url=os.environ.get('GALLERY_PUBLIC_URL','https://unconfigured.invalid'),
                     event_code=os.environ['GALLERY_EVENT_CODE'],extra_hosts=['*.modal.run'])
     service = Service(config)

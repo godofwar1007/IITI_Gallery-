@@ -29,6 +29,7 @@ class Config:
     session_seconds: int = 24 * 3600
     extra_hosts: list[str] = field(default_factory=list)
     local_demo: bool = False
+    public_gallery: bool = False
     places: Path | None = None
     text_profile: str = field(default_factory=lambda: os.environ.get('GALLERY_TEXT_PROFILE', 'campus-run2'))
     adapter: Path | None = None

@@ -111,6 +111,9 @@ def make_apps(service: Service):
             return {'ok':True}
 
     async def identity(request, role):
+        if role=='viewer':
+            if config.public_gallery: return 'public-viewer'
+            role='admin'
         if role=='admin' and config.local_demo:
             return 'local-demo'
         cookie = 'fn_admin' if role=='admin' else 'fn_student'
@@ -336,26 +339,32 @@ def make_apps(service: Service):
 
     @admin.get('/api/v1/admin/status')
     async def status(request: Request):
-        await identity(request,'admin')
-        return {**await service.status(),'title':config.title,'public_url':config.public_url+'/e/workshop?'+urlencode({'code':config.event_code})}
+        await identity(request,'viewer')
+        try:
+            await identity(request,'admin')
+            organizer=True
+        except Problem as error:
+            if error.status!=401: raise
+            organizer=False
+        return {**await service.status(),'organizer':organizer,'public_gallery':config.public_gallery,'title':config.title,'public_url':config.public_url+'/e/workshop?'+urlencode({'code':config.event_code})}
 
     @admin.post('/api/v1/admin/text-profile')
     async def text_profile(request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         body = await request.json()
         if not isinstance(body,dict): raise Problem('invalid_profile','Expected a text_profile object.',422)
         return await service.switch_profile(body.get('text_profile'))
 
     @admin.get('/api/v1/gallery')
     async def gallery(request: Request,collection: str='all',offset: int=0,limit: int=60):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         if offset<0 or limit<1 or limit>120:
             raise Problem('invalid_page','Invalid page size.',422)
         return await service.gallery(collection,offset,limit)
 
     @admin.get('/api/v1/media/{asset}/{size}')
     async def media(asset: str,size: str,request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         row = (await service.eligible()).get(asset)
         if not row or size not in {'thumb','full'}:
             raise Problem('not_found','Photo is no longer available.',404)
@@ -363,19 +372,19 @@ def make_apps(service: Service):
 
     @admin.get('/api/v1/gallery/assets/{asset}')
     async def asset_record(asset: str,request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         row=(await service.eligible()).get(asset)
         if not row:raise Problem('not_found','Photo unavailable.',404)
         return service.record(row)
 
     @admin.get('/api/v1/gallery/visibility')
     async def visibility(request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         return {'ids':list(await service.eligible()),'generation':service.generation}
 
     @admin.post('/api/v1/search/text')
     async def text_search(body: Search,request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         if not body.query.strip():
             return {'items':[],'total':0,'generation':service.generation}
         vector = await service.vector(body.query)
@@ -386,7 +395,7 @@ def make_apps(service: Service):
 
     @admin.post('/api/v1/search/image')
     async def image_search(body: Maths,request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         if body.asset_id not in await service.eligible():
             raise Problem('not_found','Photo unavailable.',404)
         ids,matrix = service.snapshot
@@ -399,7 +408,7 @@ def make_apps(service: Service):
 
     @admin.post('/api/v1/search/image-file')
     async def image_file(request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         if not service.broker:
             raise Problem('prepared_only','A live model is needed to search a new photo.',503)
         async with service.query_decode:
@@ -423,7 +432,7 @@ def make_apps(service: Service):
 
     @admin.get('/api/v1/gallery/map')
     async def map_data(request: Request):
-        await identity(request,'admin')
+        await identity(request,'viewer')
         ids,matrix = service.snapshot
         visible = await service.eligible()
         points = (matrix-service.mean) @ service.pca.T
