@@ -46,7 +46,7 @@ export async function build(root=path.resolve(fileURLToPath(new URL('..',import.
   const script=await readFile(path.join(root,'frontend/deployment.js'),'utf8');
   await writeFile(path.join(dest,'assets/deployment.js'),`window.FIELDNOTES_DEPLOYMENT={backendConfigured:${Boolean(origin)}};\n${script}`);
   await writeFile(path.join(dest,'backend-unavailable.json'),JSON.stringify({error:'backend_not_connected',message:'The frontend is deployed. The gallery backend has not been connected yet.'}));
-  await writeFile(path.join(dest,'404.html'),'<!doctype html><html lang="en"><meta charset="utf-8"><title>Not found</title><h1>Page not found</h1><a href="/">Open Fieldnotes</a></html>');
+  await writeFile(path.join(dest,'404.html'),'<!doctype html><html lang="en"><meta charset="utf-8"><title>Not found</title><h1>Page not found</h1><a href="/">Open IITI Gallery</a></html>');
   await writeFile(path.join(output,'config.json'),JSON.stringify(routing(origin),null,2)+'\n');
   console.log(`Frontend built. Backend ${origin?'proxy configured':'not connected (setup state)'}.`);
   return {output,dest,origin};
