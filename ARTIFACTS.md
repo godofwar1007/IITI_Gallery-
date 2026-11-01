@@ -21,10 +21,10 @@ Use the verified `gallery_demo_campus.zip` full-gallery export or the original `
 
 The runtime validates the model revision, dimensions, normalization and archive checksums. Stored image vectors stay unchanged when switching text profiles.
 
-## Future backend host
+## Backend host
 
 Store model/adapter files, gallery exports, the event database and uploaded photos in durable storage. The current SQLite/in-memory broker design needs one owning backend process; do not autoscale multiple independent writers against the same database or treat ephemeral container disk as persistence. The GPU worker must be warmed for the workshop.
 
-Never deploy password-free `--demo` mode publicly. Configure organizer authentication, HTTPS public origin, secure cookies and the presenter/student gateway before connecting the Vercel proxy. Deploying that gateway is the next task.
+Never deploy password-free `--demo` mode publicly. Configure organizer authentication, HTTPS public origin, secure cookies and the presenter/student gateway before connecting the Vercel proxy. The authenticated gateway is now deployed on Modal; see DEPLOYMENT.md for the endpoint and exact-origin Vercel connection step.
 
 No credentials, cloud tokens or passwords belong in this repository. `.env.example` contains only an empty frontend backend-address setting.

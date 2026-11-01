@@ -25,7 +25,11 @@ export function routing(origin) {
   return {version:3,routes};
 }
 
-export async function build(root=path.resolve(fileURLToPath(new URL('..',import.meta.url))), value=process.env.GALLERY_BACKEND_URL||'') {
+export async function build(root=path.resolve(fileURLToPath(new URL('..',import.meta.url))), value=process.env.GALLERY_BACKEND_URL) {
+  if(value===undefined) {
+    try { value=JSON.parse(await readFile(path.join(root,'frontend/backend.json'),'utf8')).url; }
+    catch(error) { if(error.code!=='ENOENT') throw error; value=''; }
+  }
   const origin=backendOrigin(value);
   const output=path.join(root,'.vercel/output');
   const dest=path.join(output,'static');

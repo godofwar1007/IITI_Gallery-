@@ -137,7 +137,7 @@ def make_apps(service: Service):
                                                     (digest(value),role,now,now+config.session_seconds)),True)
         response = JSONResponse({'ok':True})
         response.set_cookie('fn_admin' if role=='admin' else 'fn_student',value,httponly=True,samesite='strict',
-                            secure=config.cookie_secure if role=='student' else False,max_age=config.session_seconds)
+                            secure=config.cookie_secure,max_age=config.session_seconds)
         return response
 
     @public.get('/',response_class=HTMLResponse)

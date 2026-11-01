@@ -387,6 +387,8 @@ class Service:
         collections = {k:sum(r['collection']==k for r in visible.values()) for k in {r['collection'] for r in visible.values()}}
         return {**counts,'collections':collections,'settings':await self.settings(),'generation':self.generation,'instance_id':self.instance_id,
                 'mode':'live' if self.broker else 'prepared','model':MODEL_ID,'revision':REVISION,
+                'inference_device':getattr(self.encoder,'device',None),
+                'gpu_name':self.encoder.torch.cuda.get_device_name() if getattr(self.encoder,'device',None)=='cuda' else None,
                 'free_gib':round(shutil.disk_usage(self.config.data).free/2**30,1),
                 'model_error':self.broker.error if self.broker else None,'error':self.error,
                 'text_profile':self.text_profile,'text_profiles':list(PROFILES),'query_cache_size':len(self.cache),

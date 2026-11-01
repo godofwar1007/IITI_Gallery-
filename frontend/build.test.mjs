@@ -24,3 +24,9 @@ test('build publishes only static UI files and an honest disconnected state',asy
   const css=await readFile(dest+'/assets/style.css','utf8');
   assert(css.includes('.gallery-grid{display:grid;'));
 });
+test('connected build emits the real HTTPS backend proxy',async()=>{
+  const {output,dest}=await build(undefined,'https://ppp3work--iiti-fieldnotes.us-east.modal.run');
+  const config=JSON.parse(await readFile(output+'/config.json','utf8'));
+  assert.equal(config.routes.find(r=>r.src==='/api/(.*)').dest,'https://ppp3work--iiti-fieldnotes.us-east.modal.run/api/$1');
+  assert((await readFile(dest+'/assets/deployment.js','utf8')).includes('backendConfigured:true'));
+});

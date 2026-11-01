@@ -16,13 +16,13 @@ The photo ranking is left-to-right across each row, then onto the next row. SigL
 1. Import this GitHub repository into Vercel.
 2. Set **Root Directory** to the repository root (`./`).
 3. Choose **Framework Preset: Other**. `vercel.json` sets the install and build commands; leave Output Directory unset (the build generates Vercel Build Output API files).
-4. Deploy. No environment variables are needed for the frontend-only stage.
+4. Deploy. The committed `frontend/backend.json` supplies the deployed Modal backend address; no environment variables are needed for that address.
 
-This publishes the real UI with a clear **Backend not connected** state. Photos, arbitrary searches and uploads require the backend; no private photos, placeholder results or fake search responses are bundled.
+This publishes the real UI and routes API calls to the Modal backend. After Vercel creates your site, allow its exact origin on Modal as described in [DEPLOYMENT.md](DEPLOYMENT.md) before signing in through Vercel. No private photos or fake search responses are bundled into the frontend.
 
-When the HTTPS backend gateway is deployed, add `GALLERY_BACKEND_URL=https://your-backend-host` in Vercel and **redeploy**. The build generates same-origin `/api/*` and `/health/*` proxies so authentication cookies and media links stay on the frontend hostname. Do not add a path, token or username/password to this variable. It is a backend address, not a secret.
+To override the committed backend address, add `GALLERY_BACKEND_URL=https://your-backend-host` in Vercel and **redeploy**. The build generates same-origin `/api/*` and `/health/*` proxies so authentication cookies and media links stay on the frontend hostname. Do not add a path, token or username/password to this variable. It is a backend address, not a secret.
 
-The backend must expose BOTH protected organizer APIs and student APIs through its gateway. The current local application serves those on separate ports; connecting Vercel directly to only the student port will not work. Gateway deployment, authenticated public settings and durable storage are the next phase, not enabled by this source push.
+The deployed single-origin gateway exposes both protected organizer APIs and student APIs. The original local launcher still serves separate ports. See [DEPLOYMENT.md](DEPLOYMENT.md) for the current endpoint, origin registration, persistent storage and cost controls.
 
 ## Build and test the frontend locally
 
@@ -67,7 +67,7 @@ python -m pytest -q
 
 Tests requiring photo data skip when the private seed export is absent. Set `GALLERY_TEST_SEED` to its local path to run those tests. Manifest validation and frontend contract tests run without private photo data. Real GPU verification tools require the actual model and adapter, and are not simulated by the unit tests.
 
-The prepared local demo previously passed 42 Python tests, plus separate GPU identity/drift and browser checks. Those historical results are not a claim that the cloud deployment has already been tested. The backend has not been deployed by this commit.
+The backend suite now passes 45 tests. Live Modal verification also passed GPU search, authentication, student upload/moderation/embedding/withdrawal, and persistence across a full restart. The frontend has 4 passing build/routing tests. Cloud deployment verification is recorded separately in DEPLOYMENT.md and VALIDATION.md.
 
 ## Data and attribution
 

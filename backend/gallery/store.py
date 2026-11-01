@@ -46,6 +46,7 @@ class Store:
         path.parent.mkdir(parents=True, exist_ok=True)
         self.executor = ThreadPoolExecutor(1, thread_name_prefix='catalog')
         self.lock = threading.RLock()
+        self.after_write = None
         self.db = sqlite3.connect(path, check_same_thread=False, isolation_level=None)
         if os.name=='posix':path.chmod(0o600)
         self.db.row_factory = sqlite3.Row
@@ -59,11 +60,13 @@ class Store:
                 result = function(self.db)
                 if write:
                     self.db.execute('COMMIT')
-                return result
             except BaseException:
                 if write:
                     self.db.execute('ROLLBACK')
                 raise
+            if write and self.after_write is not None:
+                self.after_write()
+            return result
 
     async def call(self, function, write=False):
         loop = asyncio.get_running_loop()
