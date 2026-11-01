@@ -102,7 +102,7 @@ def make_apps(service: Service):
 
         @app.get('/assets/{name}')
         async def static(name: str):
-            if name not in {'style.css','gallery.js','upload.js','moderator.js','shared.js','file-entry.js'}:
+            if name not in {'style.css','gallery.js','upload.js','moderator.js','shared.js','file-entry.js','pixelify-sans-700.woff2','dm-sans-400.woff2','dm-sans-600.woff2','jetbrains-mono-400.woff2','jetbrains-mono-700.woff2'}:
                 raise Problem('not_found','Not found.',404)
             return FileResponse(WEB/name)
 

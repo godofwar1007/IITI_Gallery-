@@ -58,3 +58,7 @@ Only approved imported photos are listed. Source metadata did not include per-ph
 | sports_complex_web_04.jpg | Google Maps place photos (user-contributed) | sports/sports_10.jpg; date stamp 2022 |
 | sports_complex_web_05.jpg | Google Maps place photos (user-contributed) | sports/sports_11.jpg; Maps listing: Sports Complex |
 | guest_house_web_01.jpg | Google Maps place photos (user-contributed) | _campus_general/_campus_general_07.jpg; Maps listing: IIT Indore |
+
+## Fonts
+
+Pixelify Sans, DM Sans and JetBrains Mono (from Fontsource) are bundled as `.woff2` files in `backend/gallery/web/`. All three are licensed under the SIL Open Font License 1.1.

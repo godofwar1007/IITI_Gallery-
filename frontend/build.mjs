@@ -36,7 +36,7 @@ export async function build(root=path.resolve(fileURLToPath(new URL('..',import.
   await mkdir(path.join(dest,'assets'),{recursive:true});
   const source=path.join(root,'backend/gallery/web');
   // Explicit file allowlist: no dataset, model, local DB or preview is published.
-  const assets=['style.css','gallery.js','shared.js','upload.js','moderator.js','file-entry.js'];
+  const assets=['style.css','gallery.js','shared.js','upload.js','moderator.js','file-entry.js','pixelify-sans-700.woff2','dm-sans-400.woff2','dm-sans-600.woff2','jetbrains-mono-400.woff2','jetbrains-mono-700.woff2'];
   for(const name of assets) await copyFile(path.join(source,name),path.join(dest,'assets',name));
   await copyFile(path.join(source,'file-entry.js'),path.join(dest,'file-entry.js'));
   for(const [sourceName,targetName] of [['gallery.html','index.html'],['moderator.html','moderator.html'],['upload.html','upload.html']]) {

@@ -29,6 +29,7 @@ def test_html_js_hooks_are_present_and_assets_are_bundled():
 
 def test_no_runtime_cdn_or_inline_script_dependency():
     for file in ROOT.glob('*'):
+        if file.suffix=='.woff2':continue  # self-hosted fonts are binary
         text=file.read_text(encoding='utf-8')
         assert 'fonts.googleapis' not in text and 'cdn.jsdelivr' not in text and 'unpkg.com' not in text
         if file.suffix=='.html':
