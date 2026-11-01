@@ -1,5 +1,11 @@
 # Modal backend + Vercel frontend
 
+## Live frontend
+
+https://iiti-gallery.vercel.app
+
+Vercel project `iiti-gallery`, team `ppp3work-5989s-projects`, is connected to the GitHub repository for automatic frontend deployments from main. Backend code still requires a separate Modal deployment. The exact production origin is registered with the Modal backend.
+
 ## Backend endpoint
 
 https://ppp3work--iiti-fieldnotes.us-east.modal.run/presenter
@@ -20,6 +26,7 @@ Volumes: `iiti-gallery-assets-v1` for the cached checkpoint, adapter and verifie
 
 ```sh
 python backend/tools/connect_frontend.py https://YOUR-SITE.vercel.app
+python -m modal app stop iiti-fieldnotes-gallery --yes
 python -m modal deploy backend/deploy/modal_app.py --strategy recreate
 ```
 

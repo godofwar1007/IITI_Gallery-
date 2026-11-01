@@ -14,7 +14,7 @@ def main():
         p.error('Supply an HTTPS origin without credentials, path, query or fragment')
     origin=args.url.rstrip('/')
     modal.Secret.from_name('iiti-gallery-runtime-v1').update({'GALLERY_PUBLIC_URL':origin})
-    print('Allowed frontend origin saved. Redeploy with --strategy recreate to load it.')
+    print('Allowed frontend origin saved. Stop the app and redeploy with --strategy recreate to load it; unchanged deployments may be skipped.')
 
 
 if __name__=='__main__': main()
