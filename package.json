@@ -1,0 +1,11 @@
+{
+  "name": "iiti-fieldnotes-gallery",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node frontend/build.mjs",
+    "test": "node --test frontend/build.test.mjs"
+  }
+}

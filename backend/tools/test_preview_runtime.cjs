@@ -1,0 +1,34 @@
+// Unit test of bundled data/ranking, not browser or visual automation.
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert');
+const root=path.resolve(__dirname,'..');
+const html=fs.readFileSync(path.join(root,'Gallery_Preview.html'),'utf8');
+const encoded=html.match(/<script id="preview-data" type="application\/json">([\s\S]*?)<\/script>/)[1];
+const data=JSON.parse(encoded);
+global.document={getElementById:()=>({textContent:encoded})};global.window={};
+vm.runInThisContext(fs.readFileSync(path.join(__dirname,'preview-runtime.js'),'utf8'));
+(async()=>{
+ const api=window.FIELDNOTES_PREVIEW.api;
+ const first=await api('/api/v1/gallery?collection=all&limit=60&offset=0');
+ const next=await api('/api/v1/gallery?collection=all&limit=60&offset=60');
+ assert.equal(first.total,data.photos.length);assert.equal(first.items.length,60);assert.equal(next.items.length,60);
+ assert.equal(new Set([...first.items,...next.items].map(p=>p.id)).size,120);
+ assert(first.items.every(p=>p.thumb.startsWith('data:image/jpeg;base64,')&&p.image===p.thumb));
+ const result=await api('/api/v1/search/text',{body:{query:'a construction crane above an unfinished building under an orange sky',k:12,collection:'all'}});
+ assert(result.items.length===12&&Number.isFinite(result.items[0].cosine));
+ const status=await api('/api/v1/admin/status');assert.equal(status.text_profile,'campus-run2');
+ assert(status.collections.campus>0);
+ await api('/api/v1/admin/text-profile',{body:{text_profile:'base'}});
+ assert.equal((await api('/api/v1/admin/status')).text_profile,'base');
+ await assert.rejects(()=>api('/api/v1/admin/text-profile',{body:{text_profile:'wrong'}}),/Unknown/);
+ const similar=await api('/api/v1/search/image',{body:{asset_id:first.items[0].id,k:12}});
+ assert.equal(similar.items.length,12);assert(similar.items.every(p=>p.id!==first.items[0].id));
+ const map=await api('/api/v1/gallery/map');assert.equal(map.points.length,data.photos.length);
+ assert(map.points.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y)));
+ await assert.rejects(()=>api('/api/v1/search/text',{body:{query:'unprepared arbitrary query'}}),/saved searches/);
+ assert(!/<script\b[^>]*\bsrc=/.test(html));assert(!/<link\b[^>]*stylesheet/.test(html));
+ const module=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+ const compiled=path.join(root,'test-results/preview-bundle-check.mjs');fs.writeFileSync(compiled,module);
+ const report={status:'passed',scope:'Node unit checks of real standalone data/math; no browser/visual claim',photos:data.photos.length,saved_queries:data.queryTexts.length,checks:['pagination','embedded images','real saved-query ranking','image similarity excludes self','finite map','unsupported query message','no external assets']};
+ fs.writeFileSync(path.join(root,'test-results/standalone_preview.json'),JSON.stringify(report,null,2));
+ console.log(JSON.stringify(report));
+})().catch(error=>{console.error(error);process.exitCode=1;});

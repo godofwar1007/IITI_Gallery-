@@ -1,0 +1,18 @@
+{
+    servers {
+        timeouts {
+            read_header 15s
+            read_body 180s
+        }
+    }
+}
+
+{$GALLERY_HOSTNAME} {
+    request_body {
+        max_size 13MB
+    }
+    encode gzip
+    # Only student routes exist on this port. Organizer port is not proxied.
+    # Do not enable request buffering: admission and byte limits are streamed.
+    reverse_proxy 127.0.0.1:7860
+}

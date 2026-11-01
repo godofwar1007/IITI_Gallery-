@@ -1,0 +1,10 @@
+{
+  "places": [
+    {
+      "place_id": "your_place_id",
+      "names": ["Verified place name"],
+      "aliases": ["Nickname", "Abbreviation"],
+      "references": ["reference_01.jpg", "reference_02.jpg", "reference_03.jpg", "reference_04.jpg", "reference_05.jpg"]
+    }
+  ]
+}

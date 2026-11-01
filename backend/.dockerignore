@@ -1,0 +1,11 @@
+.venv
+test-results
+__pycache__
+.pytest_cache
+.env
+.env.*
+seed
+*.egg-info
+runtime
+tests
+tools

@@ -1,0 +1,3 @@
+* text=auto eol=lf
+# Adapter hashes are byte-level; preserve the original artifacts exactly.
+backend/models/adapters/campus-run2/* -text

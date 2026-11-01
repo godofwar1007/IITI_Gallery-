@@ -1,0 +1,29 @@
+{
+  "profile": "campus-run2",
+  "base_model_id": "google/siglip2-giant-opt-patch16-384",
+  "revision": "a713301b217d38485fb2204c808367d10bc3cc40",
+  "source_run": "20261031_143330_run2",
+  "sha256": {
+    "adapter_config.json": "1801b5f13dc878be46392e86b2302e0b9bece42b5f03c57f59cb0affb5936639",
+    "adapter_model.safetensors": "de149e96654c0cb7e977efe99b7336ec08474321ee637d3ef9e7698815eed3f7",
+    "README.md": "499ce297abc3610496a3fe976af958fc69fd5b574ad8624ad4748aa3b4a881bb"
+  },
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "tower": "text_model",
+    "targets": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "out_proj"
+    ]
+  },
+  "test_metrics": {
+    "campus_mrr_base": 0.7336404208,
+    "campus_mrr_run2": 0.8341073271,
+    "general_mrr_base": 0.7149659864,
+    "general_mrr_run2": 0.767857142857
+  }
+}

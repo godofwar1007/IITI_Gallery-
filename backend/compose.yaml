@@ -1,0 +1,41 @@
+services:
+  app:
+    build: .
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      GALLERY_ADMIN_PASSWORD: ${GALLERY_ADMIN_PASSWORD:?Set a strong organizer password}
+      GALLERY_EVENT_CODE: ${GALLERY_EVENT_CODE:?Set the event code}
+      HF_HUB_OFFLINE: '1'
+    volumes:
+      - /srv/fieldnotes/data:/data
+      - /srv/fieldnotes/models:/models
+      - /srv/fieldnotes/seed.zip:/seed.zip:ro
+    command: [serve, --data, /data, --seed, /seed.zip, --model, /models/giant, --mode, live, --adapter, /models/adapters/campus-run2, --public-url, 'https://${GALLERY_HOSTNAME:?Set the public hostname}']
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:7860/health/ready', timeout=5)"]
+      interval: 30s
+      timeout: 8s
+      start_period: 180s
+      retries: 3
+    stop_grace_period: 90s
+  proxy:
+    image: caddy:2
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      GALLERY_HOSTNAME: ${GALLERY_HOSTNAME:?Set the public hostname}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+volumes:
+  caddy_data:
+  caddy_config:
